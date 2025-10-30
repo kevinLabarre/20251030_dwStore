@@ -1,0 +1,36 @@
+import axios from "axios";
+import { useState } from "react";
+
+export const useProduct = () => {
+  // A remplacer par une variable d'environnement
+  const baseUrl = "http://localhost:3001";
+  const productUrl = `${baseUrl}/products`;
+
+  const productInstance = axios.create({
+    baseURL: productUrl,
+  });
+
+  // productInstance.interceptors.response;
+  productInstance.interceptors.request.use((config) => {
+    // ATTENTION -> POUR DU TEST : retard de 3s les envoies de requête HTTP
+    return new Promise((resolve) => setTimeout(() => resolve(config), 3000)); // 3000 = 3s
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null); // Stocke l'objet HTTP error quand une erreur intervient sur une de nos méthodes ci-dessous
+
+  const getProducts = () => {
+    setLoading(true);
+    return productInstance
+      .get(productUrl)
+      .catch((err) => {
+        setError(err);
+        throw err(err); // Si on ne met le throw, les composants ne pourront pas récupérer l'erreur via le .catch()
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  return { getProducts, loading, error };
+};
