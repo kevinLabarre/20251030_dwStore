@@ -2,22 +2,54 @@ import { useEffect, useState } from "react";
 import { useProduct } from "../hooks/useProduct";
 import { ProductCard } from "../components/ProductCard";
 import { ProductCardSkeleton } from "../components/ProductCardSkeleton";
+import { PaginationButton } from "../components/PaginationButton";
+import { UpdateProductForm } from "../components/UpdateProductForm";
+import { Modal } from "../components/Modal";
 
 export const ProductPage = () => {
-  const { getProducts, loading, error } = useProduct();
+  const nbrItemsPerPage = 8;
 
-  const [products, setProducts] = useState([]);
+  const { getProductsPaginate, loading, error } = useProduct();
+
+  const [page, setPage] = useState(1);
+
+  const [responseApi, setResponseApi] = useState({
+    firstLoad: true, // cette propriété sera écrasé dès le 1er chargement lors de la réceptions des products
+    data: [],
+  });
 
   const myArray = new Array(8).fill(0); // new Array pour définir une taille . .fill() pour remplir le tableau avec 'O' pour chaque item
 
   useEffect(() => {
     loadProduct();
-  }, []);
+  }, [page]);
 
   const loadProduct = () => {
-    getProducts().then((resp) => {
-      setProducts(resp.data);
+    getProductsPaginate(page, nbrItemsPerPage).then((resp) => {
+      setResponseApi(resp.data);
     });
+  };
+
+  const handleNextPage = () => {
+    setPage((prev) => prev + 1);
+  };
+
+  const handlePrevPage = () => {
+    setPage((prev) => prev - 1);
+  };
+
+  const handlePaginationButtonClick = (buttonNumber) => {
+    setPage(buttonNumber);
+  };
+
+  // Logique pour la mise à jour avec modal (pop up)
+  const [productToUpdate, setProductToUpdate] = useState();
+  const handleUpdateProduct = (productToUpdate) => {
+    // L'état dont se sert notre formulaire pour se pré-remplir
+    setProductToUpdate(productToUpdate);
+
+    // Pour ouvrir notre modal
+    document.getElementById("my_modal").showModal();
   };
 
   return (
@@ -25,9 +57,52 @@ export const ProductPage = () => {
       <h1>Page produits</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {loading
-          ? myArray.map(() => <ProductCardSkeleton />)
-          : products.map((p) => <ProductCard key={p.id} product={p} />)}
+          ? myArray.map((_, idx) => <ProductCardSkeleton key={idx} />)
+          : responseApi.data.map((p) => (
+              <ProductCard
+                key={p.id}
+                product={p}
+                handleUpdateClick={handleUpdateProduct}
+              />
+            ))}
       </div>
+      <div className="w-fit m-auto mt-5">
+        <button
+          onClick={handlePrevPage}
+          disabled={responseApi.prev === null}
+          className="btn"
+        >
+          Précédent
+        </button>
+        {/* Conditionnel car 'next' est null quand on est sur la dernière page */}
+        {!responseApi.firstLoad && (
+          <span>
+            Page n°{" "}
+            {responseApi.next ? responseApi.next - 1 : responseApi.prev + 1}/
+            {responseApi.pages}
+          </span>
+        )}
+
+        <button
+          onClick={handleNextPage}
+          disabled={responseApi.next === null}
+          className="btn"
+        >
+          Suivant
+        </button>
+
+        <div className="w-fit m-auto mt-5">
+          <PaginationButton
+            nbrButtons={responseApi.pages}
+            handleClick={handlePaginationButtonClick}
+          />
+        </div>
+      </div>
+
+      {/* Modal : ouverture déclenchée depuis nos composant 'productCard */}
+      <Modal
+        modalContent={<UpdateProductForm productToUpdate={productToUpdate} />}
+      />
     </section>
   );
 };

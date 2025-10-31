@@ -1,6 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
+import { Modal } from "./Modal";
+import { UpdateProductForm } from "./UpdateProductForm";
 
-export const ProductCard = ({ product }) => {
+export const ProductCard = ({ product, handleUpdateClick }) => {
   const navigate = useNavigate();
 
   const handleGoToDetails = () => {
@@ -37,6 +39,17 @@ export const ProductCard = ({ product }) => {
           </Link> */}
           <button onClick={handleGoToDetails}>Voir détails</button>
         </div>
+        <button
+          className="btn btn-warning"
+          onClick={() => handleUpdateClick(product)}
+        >
+          Modifier
+        </button>
+        {/* <Modal
+          ModalContent={<UpdateProductForm productToUpdate={product} />}
+          buttonContent="Modifier"
+          buttonStyle="btn-warning"
+        /> */}
       </div>
     </div>
   );

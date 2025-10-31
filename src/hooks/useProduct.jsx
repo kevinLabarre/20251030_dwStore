@@ -22,7 +22,7 @@ export const useProduct = () => {
   const getProducts = () => {
     setLoading(true);
     return productInstance
-      .get(productUrl)
+      .get() // Pas d'urlpassé en param, car on a une instance axios qui a une base url "http://localhost:3001/products"
       .catch((err) => {
         setError(err);
         throw err(err); // Si on ne met le throw, les composants ne pourront pas récupérer l'erreur via le .catch()
@@ -32,5 +32,19 @@ export const useProduct = () => {
       });
   };
 
-  return { getProducts, loading, error };
+  // Avec json-server, 'page' est l'index de la page, 'perPage' est le nombre de produits par page
+  const getProductsPaginate = (page, perPage) => {
+    setLoading(true);
+    return productInstance
+      .get(`/?_page=${page}&_per_page=${perPage}`)
+      .catch((err) => {
+        setError(err);
+        throw err(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  return { getProducts, getProductsPaginate, loading, error };
 };

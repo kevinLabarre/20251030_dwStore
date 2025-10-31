@@ -6,12 +6,21 @@ export const ProductDetailPage = () => {
   console.log("retour de useParams(): ", params.id);
 
   // Avec destructuration :
-  const { id } = useParams();
+  const { slug } = useParams();
 
   return (
     <>
       <h1>Détails produits</h1>
-      <p>id passé en param : {id}</p>
+      <p>id passé en param : {slug}</p>
+      <p>
+        <strong>
+          L'idée de ce genre de composant (lors de son chargement) est de
+          charger la données correcpondant au slug. Nous, on n'a pas de endpoint
+          nous permettant de récupérer les données via le slug. ( on pourrait
+          modifier le param slug par id pour le faire fonctionner avec le json
+          serveur )
+        </strong>
+      </p>
     </>
   );
 };
