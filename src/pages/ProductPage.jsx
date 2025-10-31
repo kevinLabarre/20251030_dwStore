@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { useProduct } from "../hooks/useProduct";
 import { ProductCard } from "../components/ProductCard";
 import { ProductCardSkeleton } from "../components/ProductCardSkeleton";
 import { PaginationButton } from "../components/PaginationButton";
 import { UpdateProductForm } from "../components/UpdateProductForm";
 import { Modal } from "../components/Modal";
+import { useProductOpti } from "../hooks/useProductOpti";
 
 export const ProductPage = () => {
   const nbrItemsPerPage = 8;
 
-  const { getProductsPaginate, loading, error } = useProduct();
+  const { getProductsPaginate, loading, error } = useProductOpti();
 
   const [page, setPage] = useState(1);
 

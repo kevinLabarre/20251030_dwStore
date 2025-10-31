@@ -1,28 +1,17 @@
-import axios from "axios";
 import { useState } from "react";
+import { useAxiosInstance } from "./useAxiosInstance";
 
 export const useProduct = () => {
-  // A remplacer par une variable d'environnement
-  const baseUrl = "http://localhost:3001";
-  const productUrl = `${baseUrl}/products`;
-
-  const productInstance = axios.create({
-    baseURL: productUrl,
-  });
-
-  // productInstance.interceptors.response;
-  productInstance.interceptors.request.use((config) => {
-    // ATTENTION -> POUR DU TEST : retard de 3s les envoies de requête HTTP
-    return new Promise((resolve) => setTimeout(() => resolve(config), 3000)); // 3000 = 3s
-  });
+  // On récupère une instance sur laquelle un intercepteur est configuré
+  const axiosInstance = useAxiosInstance();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null); // Stocke l'objet HTTP error quand une erreur intervient sur une de nos méthodes ci-dessous
 
   const getProducts = () => {
     setLoading(true);
-    return productInstance
-      .get() // Pas d'urlpassé en param, car on a une instance axios qui a une base url "http://localhost:3001/products"
+    return axiosInstance
+      .get("/products") // Pas d'urlpassé en param, car on a une instance axios qui a une base url "http://localhost:3001/products"
       .catch((err) => {
         setError(err);
         throw err(err); // Si on ne met le throw, les composants ne pourront pas récupérer l'erreur via le .catch()
@@ -35,8 +24,8 @@ export const useProduct = () => {
   // Avec json-server, 'page' est l'index de la page, 'perPage' est le nombre de produits par page
   const getProductsPaginate = (page, perPage) => {
     setLoading(true);
-    return productInstance
-      .get(`/?_page=${page}&_per_page=${perPage}`)
+    return axiosInstance
+      .get(`/products/?_page=${page}&_per_page=${perPage}`)
       .catch((err) => {
         setError(err);
         throw err(err);
@@ -48,8 +37,8 @@ export const useProduct = () => {
 
   const updateOneProduct = (productToUpdate) => {
     setLoading(true);
-    return productInstance
-      .put(`/${productToUpdate.id}`, productToUpdate)
+    return axiosInstance
+      .put(`"/products"/${productToUpdate.id}`, productToUpdate)
       .catch((err) => {
         setError(err);
         throw err(err);

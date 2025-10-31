@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 export const ProductDetailPage = () => {
@@ -7,6 +8,8 @@ export const ProductDetailPage = () => {
 
   // Avec destructuration :
   const { slug } = useParams();
+
+  const count = useSelector((state) => state.counter.value);
 
   return (
     <>
@@ -21,6 +24,7 @@ export const ProductDetailPage = () => {
           serveur )
         </strong>
       </p>
+      <p>Mon compteur redux : {count}</p>
     </>
   );
 };

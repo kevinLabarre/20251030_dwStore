@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { HeaderItem } from "./HeaderItem";
 
 export const Navbar = () => {
@@ -58,7 +59,9 @@ export const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end">
-        <a className="btn">Button</a>
+        <Link to="/connexion" className="btn">
+          Connexion
+        </Link>
       </div>
     </div>
   );

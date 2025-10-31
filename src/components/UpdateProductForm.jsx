@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useProduct } from "../hooks/useProduct";
+import { useProductOpti } from "../hooks/useProductOpti";
 
 export const UpdateProductForm = ({ productToUpdate, handleUpdate }) => {
   const {
@@ -10,7 +10,7 @@ export const UpdateProductForm = ({ productToUpdate, handleUpdate }) => {
     reset,
   } = useForm();
 
-  const { updateOneProduct, loading } = useProduct();
+  const { updateOneProduct, loading } = useProductOpti();
 
   useEffect(() => {
     // reset() permet de faire un reset du formulaire + de le pré-remplir

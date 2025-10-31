@@ -4,6 +4,7 @@ import { Navbar } from "./components/Navbar";
 import { HomePage } from "./pages/Homepage";
 import { ProductDetailPage } from "./pages/ProductDetailPage";
 import { ProductPage } from "./pages/ProductPage";
+import { LoginPage } from "./pages/LoginPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -23,6 +24,10 @@ function App() {
         {
           path: "produits/details/:slug",
           element: <ProductDetailPage />,
+        },
+        {
+          path: "connexion",
+          element: <LoginPage />,
         },
         {
           path: "*",
