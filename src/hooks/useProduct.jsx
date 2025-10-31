@@ -46,5 +46,18 @@ export const useProduct = () => {
       });
   };
 
-  return { getProducts, getProductsPaginate, loading, error };
+  const updateOneProduct = (productToUpdate) => {
+    setLoading(true);
+    return productInstance
+      .put(`/${productToUpdate.id}`, productToUpdate)
+      .catch((err) => {
+        setError(err);
+        throw err(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  return { getProducts, getProductsPaginate, updateOneProduct, loading, error };
 };

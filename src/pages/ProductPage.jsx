@@ -44,12 +44,28 @@ export const ProductPage = () => {
 
   // Logique pour la mise à jour avec modal (pop up)
   const [productToUpdate, setProductToUpdate] = useState();
-  const handleUpdateProduct = (productToUpdate) => {
+
+  // Fonction prévue pour mettre à jour le produit utilisé pour pré-remplir le formulaire
+  const handleUpdateForm = (productToUpdate) => {
     // L'état dont se sert notre formulaire pour se pré-remplir
     setProductToUpdate(productToUpdate);
 
     // Pour ouvrir notre modal
     document.getElementById("my_modal").showModal();
+  };
+
+  // fonction prévue pour mettre à jour la liste affichée à l'écran après une mise à jour réussie
+  const handleUpdateOK = (productUpdated) => {
+    console.log("handleUpdateOK", productUpdated);
+
+    setResponseApi((prev) => {
+      return {
+        ...prev,
+        data: prev.data.map((p) =>
+          p.id === productUpdated.id ? productUpdated : p
+        ),
+      };
+    });
   };
 
   return (
@@ -62,7 +78,7 @@ export const ProductPage = () => {
               <ProductCard
                 key={p.id}
                 product={p}
-                handleUpdateClick={handleUpdateProduct}
+                handleUpdateClick={handleUpdateForm}
               />
             ))}
       </div>
@@ -101,7 +117,12 @@ export const ProductPage = () => {
 
       {/* Modal : ouverture déclenchée depuis nos composant 'productCard */}
       <Modal
-        modalContent={<UpdateProductForm productToUpdate={productToUpdate} />}
+        modalContent={
+          <UpdateProductForm
+            productToUpdate={productToUpdate}
+            handleUpdate={handleUpdateOK}
+          />
+        }
       />
     </section>
   );

@@ -1,13 +1,16 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useProduct } from "../hooks/useProduct";
 
-export const UpdateProductForm = ({ productToUpdate }) => {
+export const UpdateProductForm = ({ productToUpdate, handleUpdate }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm();
+
+  const { updateOneProduct, loading } = useProduct();
 
   useEffect(() => {
     // reset() permet de faire un reset du formulaire + de le pré-remplir
@@ -16,7 +19,11 @@ export const UpdateProductForm = ({ productToUpdate }) => {
   }, [productToUpdate]);
 
   const mySubmit = (formResult) => {
-    console.log(formResult);
+    updateOneProduct(formResult).then((resp) => {
+      handleUpdate(resp.data);
+      // Pour fermer notre modal
+      document.getElementById("my_modal").close();
+    });
   };
 
   return (
@@ -62,7 +69,11 @@ export const UpdateProductForm = ({ productToUpdate }) => {
         />
         {errors.category && <p>{errors.category.message}</p>}
 
-        <button className="btn btn-neutral mt-4">Modifier</button>
+        {loading ? (
+          <span className="loading loading-dots loading-xl"></span>
+        ) : (
+          <button className="btn btn-neutral mt-4">Modifier</button>
+        )}
       </fieldset>
     </form>
   );
